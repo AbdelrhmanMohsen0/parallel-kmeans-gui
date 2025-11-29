@@ -1,4 +1,6 @@
 package com.future.parallelkmeansgui.model;
 
-public class Cluster {
+import java.util.List;
+
+public record Cluster(Point centroid, List<Point> points) {
 }
