@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.future.parallelkmeansgui.controller.MainController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="500.0" prefWidth="580.0" style="-fx-border-color: #ccc; -fx-border-width: 1 0 0 0;"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.future.parallelkmeansgui.controller.MainController">
+    <VBox layoutY="124.0" prefHeight="327.0" prefWidth="500.0" spacing="20.0" AnchorPane.leftAnchor="40.0"
+          AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
+        <HBox spacing="13.0">
+            <Label maxHeight="1.7976931348623157E308" styleClass="title-4" text="Dataset"/>
+            <ComboBox fx:id="datasetCompoBox" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity"
+                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="159.0">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </ComboBox>
+        </HBox>
+        <AnchorPane>
+            <TextField fx:id="datasetFileTextField" disable="true" AnchorPane.bottomAnchor="0.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0"/>
+            <Button fx:id="browseButton" disable="true" focusTraversable="false" mnemonicParsing="false"
+                    prefHeight="36.0" prefWidth="89.0" text="Browse" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </Button>
+        </AnchorPane>
+        <StackPane>
+            <VBox.margin>
+                <Insets top="20.0"/>
+            </VBox.margin>
+            <Button fx:id="runButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="205.0"
+                    styleClass="accent" text="Run Experiments">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </Button>
+        </StackPane>
+        <StackPane fx:id="loadingPane" prefHeight="158.0" prefWidth="500.0"/>
+    </VBox>
+    <Label layoutX="43.0" layoutY="45.0" styleClass="title-1" text="Parallel K-Means Clustering Visualizer"
+           AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="30.0"/>
 </AnchorPane>

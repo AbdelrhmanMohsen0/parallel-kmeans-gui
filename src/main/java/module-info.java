@@ -1,6 +1,6 @@
 module com.future.parallelkmeansgui {
-    requires javafx.controls;
     requires javafx.fxml;
+    requires atlantafx.base;
 
     opens com.future.parallelkmeansgui to javafx.fxml;
     exports com.future.parallelkmeansgui;
