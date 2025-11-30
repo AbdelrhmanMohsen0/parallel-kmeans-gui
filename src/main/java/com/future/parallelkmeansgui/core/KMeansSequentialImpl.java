@@ -18,10 +18,9 @@ public class KMeansSequentialImpl extends KMeans {
 
     @Override
     protected List<Cluster> fit() {
-        // 1. Initialize Centroids (Task 2 - Team Member's Code)
+
         List<Point> initialCentroids = RandomCentroidsGenerator.generateKCentroids(points, config.k());
 
-        // Convert Points to Clusters (Initialize with empty mutable lists)
         List<Cluster> clusters = new ArrayList<>();
         for (Point centroid : initialCentroids) {
             clusters.add(new Cluster(centroid, new ArrayList<>()));
@@ -30,38 +29,57 @@ public class KMeansSequentialImpl extends KMeans {
         // 2. Main Loop
         for (int i = 0; i < config.maxIterations(); i++) {
 
-            // Note: If reusing clusters, we would clear points here.
-            // But since reCompute returns NEW clusters with empty lists,
-            // the lists are already empty at the start of this loop (except for 1st iter created above).
 
-            // 3. Assign points to nearest centroid (Task 3 - Team Member's Code)
             for (Point point : points) {
                 PointAssigner.assignToNearestCluster(point, clusters);
             }
 
-            // 4. Recompute Centroids (Task 4)
+
             List<Cluster> newClusters = new ArrayList<>();
             for (Cluster cluster : clusters) {
-                // CentroidReComputer returns a new Cluster with an empty point list
+
                 newClusters.add(CentroidReComputer.reCompute(cluster));
             }
 
-            // 5. Check Convergence (Task 4)
-            // If converged, we return 'clusters' (the one with points currently assigned)
+
             if (CentroidReComputer.hasClustersConverged(clusters, newClusters, config.tolerance())) {
                 return clusters;
             }
 
-            // Update for next iteration (newClusters has updated centroids but empty point lists)
+
             clusters = newClusters;
         }
 
-        // If max iterations reached, we must do one final assignment
-        // because 'clusters' currently has empty point lists (from the last reCompute).
         for (Point point : points) {
             PointAssigner.assignToNearestCluster(point, clusters);
         }
 
         return clusters;
+    }
+
+    /**
+     * BONUS FEATURE: Multiple Random Restarts.
+     * Runs the K-Means algorithm multiple times and returns the result with the lowest SSE.
+     * @return The best cluster configuration found.
+     */
+    public List<Cluster> fitWithRestarts(int trials) {
+        List<Cluster> bestClusters = null;
+        double minSSE = Double.MAX_VALUE;
+
+        for (int i = 0; i < trials; i++) {
+            // Run the standard single-pass algorithm
+            List<Cluster> currentResult = this.fit();
+
+            // Calculate the error (SSE) for this run
+            double currentSSE = SSEComputer.compute(currentResult);
+
+            // If this run is better (lower error) than previous ones, keep it
+            if (currentSSE < minSSE) {
+                minSSE = currentSSE;
+                bestClusters = currentResult;
+            }
+        }
+
+        return bestClusters;
     }
 }
