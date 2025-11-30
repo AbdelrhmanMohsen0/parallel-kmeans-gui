@@ -1,6 +1,7 @@
 package com.future.parallelkmeansgui.controller;
 
 import atlantafx.base.controls.RingProgressIndicator;
+import com.future.parallelkmeansgui.view.ViewManager;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -161,12 +162,11 @@ public class MainController implements Initializable {
 
     private void clusterSyntheticDataset() {
         int numberOfPoints = numOfDataPointsSpinner.getValue();
-
+        ViewManager.getInstance().showClusterReportWindow();
     }
 
     private void clusterCSVDataset() {
         String datasetPath = datasetFileTextField.getText();
-
 
     }
 
