@@ -187,12 +187,23 @@ public class MainController implements Initializable {
                 new Point(4, 55)
         );
         GraphView testGraph2 = new ScatterPlot(
-                TestPointsGenerator.generateClusters(3, 1000)
+                TestPointsGenerator.generateClusters(3, 1000),
+                "Scatter Plot For " + 3 + " Clusters"
         );
         GraphView testGraph3 = new RuntimeVsKGraph(
                 TestPointsGenerator.generateSequentialRuntimeKTest(),
                 TestPointsGenerator.generateParallelRuntimeKTest()
         );
-        return List.of(testGraph1.generateGraph(), testGraph2.generateGraph(), testGraph3.generateGraph());
+        GraphView testGraph4 = new RuntimeVsDatasetSizeGraph(
+          TestPointsGenerator.generateSequentialRuntime(1_000_000, 10_000),
+          TestPointsGenerator.generateParallelRuntime(1_000_000, 10_000)
+        );
+
+        GraphView testGraph5 = new SSEVsDatasetSizeGraph(
+                TestPointsGenerator.generateSequentialSSE(1_000_000, 10_000),
+                TestPointsGenerator.generateParallelSSE(1_000_000, 10_000)
+        );
+
+        return List.of(testGraph1.generateGraph(), testGraph2.generateGraph(), testGraph3.generateGraph(), testGraph4.generateGraph(), testGraph5.generateGraph());
     }
 }

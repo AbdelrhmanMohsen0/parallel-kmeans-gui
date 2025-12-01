@@ -17,6 +17,7 @@ import java.util.List;
 public class ScatterPlot extends GraphView {
 
     private final List<Cluster> clusters;
+    private final String title;
     private static final List<Color> CLUSTER_COLORS = List.of(
             Color.RED,
             Color.BLUE,
@@ -40,8 +41,9 @@ public class ScatterPlot extends GraphView {
             Color.TURQUOISE
     );
 
-    public ScatterPlot(List<Cluster> clusters) {
+    public ScatterPlot(List<Cluster> clusters, String title) {
         this.clusters = clusters;
+        this.title = title;
     }
 
     @Override
@@ -53,10 +55,19 @@ public class ScatterPlot extends GraphView {
 
         var centroids = new XYChart.Series<Number, Number>();
         centroids.setName("Centroids");
+        List<XYChart.Series<Number, Number>> clustersSeries = createClustersSeries(centroids);
 
+        var chart = new ScatterChart<>(x, y);
+        chart.setLegendVisible(false);
+        chart.setTitle(title);
+        chart.setMinHeight(300);
+        chart.getData().addAll(clustersSeries);
+        chart.getData().add(centroids);
+        return chart;
+    }
 
+    private List<XYChart.Series<Number, Number>> createClustersSeries(XYChart.Series<Number, Number> centroids) {
         List<XYChart.Series<Number, Number>> clustersSeries = new ArrayList<>();
-
         int currentColorIndex = 0;
         for (Cluster cluster : clusters) {
             XYChart.Data<Number, Number> centroid = new XYChart.Data<>(cluster.centroid().x(), cluster.centroid().y());
@@ -73,14 +84,7 @@ public class ScatterPlot extends GraphView {
             clustersSeries.add(series);
 
         }
-
-        var chart = new ScatterChart<>(x, y);
-        chart.setLegendVisible(false);
-        chart.setTitle("Scatter Plot For " + clusters.size() + " Clusters");
-        chart.setMinHeight(300);
-        chart.getData().addAll(clustersSeries);
-        chart.getData().add(centroids);
-        return chart;
+        return clustersSeries;
     }
 
     private Group createXShape() {

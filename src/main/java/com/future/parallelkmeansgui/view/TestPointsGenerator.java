@@ -74,4 +74,56 @@ public class TestPointsGenerator {
 
         return clusters;
     }
+
+    public static List<Point> generateSequentialRuntime(long maxSize, long step) {
+        List<Point> points = new ArrayList<>();
+        Random random = new Random();
+
+        for (long size = 10; size <= maxSize; size += step) {
+            // Simulate runtime: grows linearly with dataset size
+            double runtime = size * 0.002 + random.nextDouble() * 50;
+            points.add(new Point(size, runtime));
+        }
+
+        return points;
+    }
+
+    public static List<Point> generateParallelRuntime(long maxSize, long step) {
+        List<Point> points = new ArrayList<>();
+        Random random = new Random();
+
+        for (long size = 10; size <= maxSize; size += step) {
+            // Simulate runtime: grows sub-linearly with dataset size
+            double runtime = Math.log(size) * 20 + random.nextDouble() * 20;
+            points.add(new Point(size, runtime));
+        }
+
+        return points;
+    }
+
+    public static List<Point> generateSequentialSSE(long maxSize, long step) {
+        List<Point> points = new ArrayList<>();
+        Random random = new Random();
+
+        for (long size = 10; size <= maxSize; size += step) {
+            // SSE grows roughly proportional to dataset size
+            double sse = size * 0.5 + random.nextDouble() * 1000;
+            points.add(new Point(size, sse));
+        }
+
+        return points;
+    }
+
+    public static List<Point> generateParallelSSE(long maxSize, long step) {
+        List<Point> points = new ArrayList<>();
+        Random random = new Random();
+
+        for (long size = 10; size <= maxSize; size += step) {
+            // SSE grows sub-linearly with dataset size
+            double sse = Math.sqrt(size) * 200 + random.nextDouble() * 500;
+            points.add(new Point(size, sse));
+        }
+
+        return points;
+    }
 }
