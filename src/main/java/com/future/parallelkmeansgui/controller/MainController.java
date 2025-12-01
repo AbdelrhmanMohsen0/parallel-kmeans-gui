@@ -2,10 +2,7 @@ package com.future.parallelkmeansgui.controller;
 
 import atlantafx.base.controls.RingProgressIndicator;
 import com.future.parallelkmeansgui.model.Point;
-import com.future.parallelkmeansgui.view.ElbowMethodGraph;
-import com.future.parallelkmeansgui.view.GraphView;
-import com.future.parallelkmeansgui.view.TestPointsGenerator;
-import com.future.parallelkmeansgui.view.ViewManager;
+import com.future.parallelkmeansgui.view.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -189,11 +186,9 @@ public class MainController implements Initializable {
                 new Point(4, 55),
                 new Point(4, 55)
         );
-        GraphView testGraph2 = new ElbowMethodGraph(
-                TestPointsGenerator.generateElbowMethodTest(),
-                TestPointsGenerator.generateElbowMethodTest(),
-                new Point(4, 55),
-                new Point(4, 55)
+        GraphView testGraph2 = new RuntimeVsKGraph(
+          TestPointsGenerator.generateSequentialRuntimeKTest(),
+          TestPointsGenerator.generateParallelRuntimeKTest()
         );
         GraphView testGraph3 = new ElbowMethodGraph(
                 TestPointsGenerator.generateElbowMethodTest(),
