@@ -56,8 +56,8 @@ public class MainController implements Initializable {
 
     private void initLoadingRing() {
         RingProgressIndicator ring = new RingProgressIndicator();
-        ring.setPrefSize(100, 100);
-        ring.setMinSize(100, 100);
+        ring.setPrefSize(50, 50);
+        ring.setMinSize(50, 50);
         ring.progressProperty().bind(Bindings.createDoubleBinding(
                 () -> loadingPane.isVisible() ? -1d : 0d,
                 loadingPane.visibleProperty()
