@@ -1,5 +1,6 @@
 package com.future.parallelkmeansgui.view;
 
+import com.future.parallelkmeansgui.model.Cluster;
 import com.future.parallelkmeansgui.model.Point;
 
 import java.util.ArrayList;
@@ -48,5 +49,29 @@ public class TestPointsGenerator {
         }
 
         return points;
+    }
+
+    public static List<Cluster> generateClusters(int numClusters, int pointsPerCluster) {
+        List<Cluster> clusters = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 0; i < numClusters; i++) {
+            // Random centroid position
+            double cx = random.nextDouble(); // centroid x
+            double cy = random.nextDouble(); // centroid y
+            Point centroid = new Point(cx, cy);
+
+            // Generate points around centroid
+            List<Point> points = new ArrayList<>();
+            for (int j = 0; j < pointsPerCluster; j++) {
+                double x = cx + random.nextGaussian() * 0.1; // spread around centroid
+                double y = cy + random.nextGaussian() * 0.1;
+                points.add(new Point(x, y));
+            }
+
+            clusters.add(new Cluster(centroid, points));
+        }
+
+        return clusters;
     }
 }

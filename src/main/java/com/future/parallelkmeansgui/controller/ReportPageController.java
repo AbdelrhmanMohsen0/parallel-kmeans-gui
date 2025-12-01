@@ -22,7 +22,7 @@ public class ReportPageController implements Initializable {
     public Label paragraphLabel;
 
     private final ObjectProperty<Node> currentContent = new SimpleObjectProperty<>(null);
-    private List<Node> contentNodes;
+    private final List<Node> contentNodes;
 
     public ReportPageController(String title, String paragraph, List<Node> contentNodes) {
         this.contentNodes = contentNodes;
@@ -54,7 +54,7 @@ public class ReportPageController implements Initializable {
         backButton.setDisable(contentNodes.indexOf(currentContent.get()) == 0);
         nextButton.setDisable(contentNodes.indexOf(currentContent.get()) == contentNodes.size() - 1);
         currentContent.addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || contentNodes == null || contentNodes.isEmpty()) {
+            if (newValue == null || contentNodes.isEmpty()) {
                 return;
             }
             backButton.setDisable(contentNodes.indexOf(newValue) == 0);
@@ -62,11 +62,6 @@ public class ReportPageController implements Initializable {
             content.getChildren().clear();
             content.getChildren().add(newValue);
         });
-    }
-
-    public void setContentNodes(List<Node> contentNodes) {
-        this.contentNodes = contentNodes;
-        currentContent.set(contentNodes.getFirst());
     }
 
 }

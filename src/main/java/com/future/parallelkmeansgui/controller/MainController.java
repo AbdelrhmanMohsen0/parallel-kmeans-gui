@@ -186,15 +186,12 @@ public class MainController implements Initializable {
                 new Point(4, 55),
                 new Point(4, 55)
         );
-        GraphView testGraph2 = new RuntimeVsKGraph(
-          TestPointsGenerator.generateSequentialRuntimeKTest(),
-          TestPointsGenerator.generateParallelRuntimeKTest()
+        GraphView testGraph2 = new ScatterPlot(
+                TestPointsGenerator.generateClusters(3, 1000)
         );
-        GraphView testGraph3 = new ElbowMethodGraph(
-                TestPointsGenerator.generateElbowMethodTest(),
-                TestPointsGenerator.generateElbowMethodTest(),
-                new Point(4, 55),
-                new Point(4, 55)
+        GraphView testGraph3 = new RuntimeVsKGraph(
+                TestPointsGenerator.generateSequentialRuntimeKTest(),
+                TestPointsGenerator.generateParallelRuntimeKTest()
         );
         return List.of(testGraph1.generateGraph(), testGraph2.generateGraph(), testGraph3.generateGraph());
     }
