@@ -1,11 +1,16 @@
 package com.future.parallelkmeansgui.controller;
 
 import atlantafx.base.controls.RingProgressIndicator;
+import com.future.parallelkmeansgui.model.Point;
+import com.future.parallelkmeansgui.view.ElbowMethodGraph;
+import com.future.parallelkmeansgui.view.GraphView;
+import com.future.parallelkmeansgui.view.TestPointsGenerator;
 import com.future.parallelkmeansgui.view.ViewManager;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -15,6 +20,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -46,10 +52,7 @@ public class MainController implements Initializable {
                 "Synthetic 2D Dataset"
         );
 
-        datasetCompoBox.setOnAction(event -> {
-            toggleLayout();
-        });
-
+        datasetCompoBox.setOnAction(event -> toggleLayout());
         datasetCompoBox.setItems(options);
         datasetCompoBox.getSelectionModel().selectFirst();
     }
@@ -161,16 +164,43 @@ public class MainController implements Initializable {
     }
 
     private void clusterSyntheticDataset() {
-        int numberOfPoints = numOfDataPointsSpinner.getValue();
-        ViewManager.getInstance().showClusterReportWindow();
+//        int numberOfPoints = numOfDataPointsSpinner.getValue();
+        List<Node> contentNodes = generateTestGraphs();
+        ViewManager.getInstance().showClusterReportWindow(
+                "Clustering Report",
+                "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
+                contentNodes
+        );
     }
 
     private void clusterCSVDataset() {
-        String datasetPath = datasetFileTextField.getText();
+//        String datasetPath = datasetFileTextField.getText();
 
     }
 
     private void onRunExperiments() {
 
+    }
+
+    private List<Node> generateTestGraphs() {
+        GraphView testGraph1 = new ElbowMethodGraph(
+                TestPointsGenerator.generateElbowMethodTest(),
+                TestPointsGenerator.generateElbowMethodTest(),
+                new Point(4, 55),
+                new Point(4, 55)
+        );
+        GraphView testGraph2 = new ElbowMethodGraph(
+                TestPointsGenerator.generateElbowMethodTest(),
+                TestPointsGenerator.generateElbowMethodTest(),
+                new Point(4, 55),
+                new Point(4, 55)
+        );
+        GraphView testGraph3 = new ElbowMethodGraph(
+                TestPointsGenerator.generateElbowMethodTest(),
+                TestPointsGenerator.generateElbowMethodTest(),
+                new Point(4, 55),
+                new Point(4, 55)
+        );
+        return List.of(testGraph1.generateGraph(), testGraph2.generateGraph(), testGraph3.generateGraph());
     }
 }

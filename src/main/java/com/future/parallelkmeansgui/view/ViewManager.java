@@ -1,10 +1,13 @@
 package com.future.parallelkmeansgui.view;
 
+import com.future.parallelkmeansgui.controller.ReportPageController;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +21,9 @@ public class ViewManager {
         return viewManager;
     }
 
-    public void showClusterReportWindow() {
+    public void showClusterReportWindow(String title, String paragraph, List<Node> contentNodes) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/report-view.fxml"));
+        loader.setController(new ReportPageController(title, paragraph, contentNodes));
         createStage(loader,"Clustering Report", 800, 650);
     }
 
