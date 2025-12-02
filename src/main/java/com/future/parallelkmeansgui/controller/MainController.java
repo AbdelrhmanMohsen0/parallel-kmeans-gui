@@ -1,13 +1,11 @@
 package com.future.parallelkmeansgui.controller;
 
 import atlantafx.base.controls.RingProgressIndicator;
-import com.future.parallelkmeansgui.model.Point;
 import com.future.parallelkmeansgui.view.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -17,7 +15,6 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -81,7 +78,7 @@ public class MainController implements Initializable {
 
         int minValue = 10;
         int maxValue = Integer.MAX_VALUE;
-        int initialValue = 100000;
+        int initialValue = 1000;
         int stepSize = 1000;
 
         SpinnerValueFactory<Integer> valueFactory =
@@ -154,6 +151,8 @@ public class MainController implements Initializable {
     }
 
     private void onCluster() {
+        runExperimentsButton.setDisable(true);
+        clusterDatasetButton.setDisable(true);
         switch (datasetCompoBox.getValue()) {
             case "Synthetic 2D Dataset" -> clusterSyntheticDataset();
             case "Load 2D Dataset" -> clusterCSVDataset();
@@ -161,49 +160,48 @@ public class MainController implements Initializable {
     }
 
     private void clusterSyntheticDataset() {
-//        int numberOfPoints = numOfDataPointsSpinner.getValue();
-        List<Node> contentNodes = generateTestGraphs();
-        ViewManager.getInstance().showClusterReportWindow(
-                "Clustering Report",
-                "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
-                contentNodes
-        );
+        numOfDataPointsSpinner.increment(0);
+        int numberOfPoints = numOfDataPointsSpinner.getValue();
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+
+        reportGraphsGenerator.generateExperimentGraphs(numberOfPoints, generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Selected Dataset Report",
+                    "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 
     private void clusterCSVDataset() {
-//        String datasetPath = datasetFileTextField.getText();
+        String datasetPath = datasetFileTextField.getText();
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
 
+        reportGraphsGenerator.generateExperimentGraphs(datasetPath, generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Selected Dataset Report",
+                    "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 
     private void onRunExperiments() {
-
-    }
-
-    private List<Node> generateTestGraphs() {
-        GraphView testGraph1 = new ElbowMethodGraph(
-                TestPointsGenerator.generateElbowMethodTest(),
-                TestPointsGenerator.generateElbowMethodTest(),
-                new Point(4, 55),
-                new Point(4, 55)
-        );
-        GraphView testGraph2 = new ScatterPlot(
-                TestPointsGenerator.generateClusters(3, 1000),
-                "Scatter Plot For " + 3 + " Clusters"
-        );
-        GraphView testGraph3 = new RuntimeVsKGraph(
-                TestPointsGenerator.generateSequentialRuntimeKTest(),
-                TestPointsGenerator.generateParallelRuntimeKTest()
-        );
-        GraphView testGraph4 = new RuntimeVsDatasetSizeGraph(
-          TestPointsGenerator.generateSequentialRuntime(1_000_000, 10_000),
-          TestPointsGenerator.generateParallelRuntime(1_000_000, 10_000)
-        );
-
-        GraphView testGraph5 = new SSEVsDatasetSizeGraph(
-                TestPointsGenerator.generateSequentialSSE(1_000_000, 10_000),
-                TestPointsGenerator.generateParallelSSE(1_000_000, 10_000)
-        );
-
-        return List.of(testGraph1.generateGraph(), testGraph2.generateGraph(), testGraph3.generateGraph(), testGraph4.generateGraph(), testGraph5.generateGraph());
+        runExperimentsButton.setDisable(true);
+        clusterDatasetButton.setDisable(true);
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+        reportGraphsGenerator.generateMultiExperimentGraphs(generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Multiple Synthetic Datasets Report",
+                    "Some metrics after applying K-Means Clustering algorithm on multiple synthetic datasets.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 }
