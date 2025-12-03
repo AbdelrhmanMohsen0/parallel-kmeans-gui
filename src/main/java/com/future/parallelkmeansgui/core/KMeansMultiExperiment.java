@@ -13,7 +13,7 @@ import static com.future.parallelkmeansgui.core.KMeansExperiment.TOLERANCE;
 
 public class KMeansMultiExperiment {
 
-    public static int MAX_DATASET_SIZE = 1_000_000;
+    public static int MAX_DATASET_SIZE = 1_001_000;
     public static int DATASET_SIZE_STEP = 100_000;
     public static int INITIAL_DATASET_SIZE = 1000;
     public static int K = 3;
@@ -27,7 +27,7 @@ public class KMeansMultiExperiment {
         List<Result> sequentialResults = getSequentialResults();
         List<Result> parallelResults = getParallelResults();
 
-        for (int i = INITIAL_DATASET_SIZE, j = 0; i < MAX_DATASET_SIZE; i += DATASET_SIZE_STEP, j++) {
+        for (int i = INITIAL_DATASET_SIZE, j = 0; i <= MAX_DATASET_SIZE; i += DATASET_SIZE_STEP, j++) {
             runtimeVsDatasetSizeSequential.add(new Point(i, sequentialResults.get(j).runtime()));
             runtimeVsDatasetSizeParallel.add(new Point(i, parallelResults.get(j).runtime()));
             SSEVsDatasetSizeSequential.add(new Point(i, sequentialResults.get(j).sse()));
@@ -37,7 +37,7 @@ public class KMeansMultiExperiment {
 
     private List<Result> getSequentialResults() {
         List<Result> results = new ArrayList<>();
-        for (int i = INITIAL_DATASET_SIZE; i < MAX_DATASET_SIZE; i += DATASET_SIZE_STEP) {
+        for (int i = INITIAL_DATASET_SIZE; i <= MAX_DATASET_SIZE; i += DATASET_SIZE_STEP) {
             List<Point> dataset = DatasetGenerator.generate2D(i);
             KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, K, MAX_ITERATION, TOLERANCE));
             Result result = kmeans.runKMeans();
@@ -48,7 +48,7 @@ public class KMeansMultiExperiment {
 
     private List<Result> getParallelResults() {
         List<Result> results = new ArrayList<>();
-        for (int i = INITIAL_DATASET_SIZE; i < MAX_DATASET_SIZE; i += DATASET_SIZE_STEP) {
+        for (int i = INITIAL_DATASET_SIZE; i <= MAX_DATASET_SIZE; i += DATASET_SIZE_STEP) {
             List<Point> dataset = DatasetGenerator.generate2D(i);
             KMeans kmeans = new KMeansParallelImpl(new KMeansConfig(dataset, K, MAX_ITERATION, TOLERANCE));
             Result result = kmeans.runKMeans();
