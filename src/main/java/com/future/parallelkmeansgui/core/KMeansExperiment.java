@@ -36,11 +36,11 @@ public class KMeansExperiment {
         List<Result> kmeansSequentialResults = getKmeansSequentialResults();
         List<Result> kmeansParallelResults = getKmeansParallelResults();
 
-        for (int i = 1; i <= K; i++) {
-            sseVsKSequential.add(new Point(i,kmeansParallelResults.get(i).sse()));
-            runtimeVsKSequential.add(new Point(i,kmeansParallelResults.get(i).runtime()));
-            sseVsKParallel.add(new Point(i,kmeansSequentialResults.get(i).sse()));
-            runtimeVsKParallel.add(new Point(i,kmeansSequentialResults.get(i).runtime()));
+        for (int i = 1, j = 0; i <= K; i++, j++) {
+            sseVsKSequential.add(new Point(i,kmeansParallelResults.get(j).sse()));
+            runtimeVsKSequential.add(new Point(i,kmeansParallelResults.get(j).runtime()));
+            sseVsKParallel.add(new Point(i,kmeansSequentialResults.get(j).sse()));
+            runtimeVsKParallel.add(new Point(i,kmeansSequentialResults.get(j).runtime()));
         }
 
         Result bestKmeansParallelResult = ElbowKGetter.getBestResult(getKmeansParallelResults());

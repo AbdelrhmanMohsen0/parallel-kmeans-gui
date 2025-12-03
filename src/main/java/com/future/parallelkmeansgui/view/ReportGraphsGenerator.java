@@ -33,7 +33,7 @@ public class ReportGraphsGenerator {
         task.setOnRunning(e -> loadingPane.setVisible(true));
         task.setOnSucceeded(e -> {
             loadingPane.setVisible(false);
-            onFinished.accept(generateGraphsTest(kmeansExperiment));
+            onFinished.accept(generateGraphs(kmeansExperiment));
         });
         task.setOnFailed(e -> loadingPane.setVisible(false));
 
@@ -114,11 +114,4 @@ public class ReportGraphsGenerator {
                 SSEVsDatasetSize.generateGraph());
     }
 
-    private List<Node> generateGraphsTest(KMeansExperiment kmeansExperiment) {
-        GraphView scatterPlotSequential = new ScatterPlot(
-                kmeansExperiment.getBestSequentialClusters(),
-                "Scatter Plot For " + kmeansExperiment.getBestSequentialClusters().size() + " Clusters"
-        );
-        return List.of(scatterPlotSequential.generateGraph());
-    }
 }
