@@ -4,7 +4,9 @@ import com.future.parallelkmeansgui.model.Cluster;
 import com.future.parallelkmeansgui.model.KMeansConfig;
 import com.future.parallelkmeansgui.model.Point;
 import com.future.parallelkmeansgui.model.Result;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class KMeansExperiment {
@@ -19,15 +21,58 @@ public class KMeansExperiment {
     private List<Point> runtimeVsKSequential;
     private List<Point> runtimeVsKParallel;
 
+    private static final int MAX_ITERATION = 100;
+    private static final int K = 20;
+    private static final double TOLERANCE = 0.1;
     public KMeansExperiment(List<Point> dataset) {
         this.dataset = dataset;
     }
 
     public void runExperiments() {
-        // Just and example, this method should populate all properties in this class
-        KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, 3, 1000, 0.1));
+        // this method populates all properties in this class
+        List<Point> sseVsKSequential = new ArrayList<>();
+        List<Point> sseVsKParallel = new ArrayList<>();
+        List<Point> runtimeVsKSequential = new ArrayList<>();
+        List<Point> runtimeVsKParallel = new ArrayList<>();
+        List<Result> kmeansSequentialResults = getKmeansSequentialResults(K);
+        List<Result> kmeansParallelResults = getKmeansParallelResults(K);
+        for (int i = 1; i <= K; i++) {
+            sseVsKSequential.add(new Point(i,kmeansParallelResults.get(i).sse()));
+            runtimeVsKSequential.add(new Point(i,kmeansParallelResults.get(i).runtime()));
+            sseVsKParallel.add(new Point(i,kmeansSequentialResults.get(i).sse()));
+            runtimeVsKParallel.add(new Point(i,kmeansSequentialResults.get(i).runtime()));
+        }
+        Result bestKmeansParallelResult = ElbowKGetter.getBestResult(getKmeansParallelResults(K));
+        Result bestKmeansSequentialResult = ElbowKGetter.getBestResult(getKmeansSequentialResults(K));
+
+        this.bestParallelClusters = bestKmeansParallelResult.clusters();
+        this.bestSequentialClusters = bestKmeansSequentialResult.clusters();
+        this.sseVsKSequential = sseVsKSequential;
+        this.sseVsKParallel = sseVsKParallel;
+        this.bestSSEVsKPointParallel = new Point(bestKmeansParallelResult.k(), bestKmeansParallelResult.sse());
+        this.bestSSEVsKPointSequential = new Point(bestKmeansSequentialResult.k(), bestKmeansSequentialResult.sse());
+        this.runtimeVsKSequential = runtimeVsKSequential;
+        this.runtimeVsKParallel = runtimeVsKParallel;
+    }
+
+    private List<Result> getKmeansSequentialResults(int k){
+        List<Result> results = new ArrayList<>();
+        for (int i = 1; i <= K; i++){
+        KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
         Result result = kmeans.runKMeans();
-        bestSequentialClusters = result.clusters();
+        results.add(result);
+        }
+        return results;
+    }
+
+    private List<Result> getKmeansParallelResults(int k){
+        List<Result> results = new ArrayList<>();
+        for (int i = 1; i <= K; i++){
+            KMeans kmeans = new KMeansParallelImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
+            Result result = kmeans.runKMeans();
+            results.add(result);
+        }
+        return results;
     }
 
     public List<Cluster> getBestSequentialClusters() {
