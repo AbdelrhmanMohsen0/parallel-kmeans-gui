@@ -16,9 +16,12 @@ public class KMeansSequentialImpl extends KMeans {
         this.points = points;
     }
 
+    /**
+     * Standard implementation: Runs the algorithm ONCE.
+     */
     @Override
     protected List<Cluster> fit() {
-
+        // 1. Initialize Centroids
         List<Point> initialCentroids = RandomCentroidsGenerator.generateKCentroids(points, config.k());
 
         List<Cluster> clusters = new ArrayList<>();
@@ -29,27 +32,26 @@ public class KMeansSequentialImpl extends KMeans {
         // 2. Main Loop
         for (int i = 0; i < config.maxIterations(); i++) {
 
-
+            // Assign
             for (Point point : points) {
                 PointAssigner.assignToNearestCluster(point, clusters);
             }
 
-
+            // Recompute
             List<Cluster> newClusters = new ArrayList<>();
             for (Cluster cluster : clusters) {
-
                 newClusters.add(CentroidReComputer.reCompute(cluster));
             }
 
-
+            // Converge
             if (CentroidReComputer.hasClustersConverged(clusters, newClusters, config.tolerance())) {
                 return clusters;
             }
 
-
             clusters = newClusters;
         }
 
+        // Final assignment
         for (Point point : points) {
             PointAssigner.assignToNearestCluster(point, clusters);
         }
@@ -59,27 +61,20 @@ public class KMeansSequentialImpl extends KMeans {
 
     /**
      * BONUS FEATURE: Multiple Random Restarts.
-     * Runs the K-Means algorithm multiple times and returns the result with the lowest SSE.
-     * @return The best cluster configuration found.
+     * Keeps K the same, but tries different random seeds to find the lowest SSE for THAT K.
      */
     public List<Cluster> fitWithRestarts(int trials) {
         List<Cluster> bestClusters = null;
         double minSSE = Double.MAX_VALUE;
 
         for (int i = 0; i < trials; i++) {
-            // Run the standard single-pass algorithm
             List<Cluster> currentResult = this.fit();
-
-            // Calculate the error (SSE) for this run
             double currentSSE = SSEComputer.compute(currentResult);
-
-            // If this run is better (lower error) than previous ones, keep it
             if (currentSSE < minSSE) {
                 minSSE = currentSSE;
                 bestClusters = currentResult;
             }
         }
-
         return bestClusters;
     }
 }
