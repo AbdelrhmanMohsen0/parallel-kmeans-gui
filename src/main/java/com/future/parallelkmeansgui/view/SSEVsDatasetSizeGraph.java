@@ -15,8 +15,8 @@ public class SSEVsDatasetSizeGraph extends GraphView {
     private static final int STEP_DatasetSize = 100_000;
 
     private static final double MIN_SSE = 0.0;
-    private static final double MAX_SSE = 120_000;
-    private static final double STEP_SSE = 10_000;
+    private final double MAX_SSE;
+    private final double STEP_SSE;
 
     private final List<Point> pointsSequential;
     private final List<Point> pointsParallel;
@@ -24,6 +24,21 @@ public class SSEVsDatasetSizeGraph extends GraphView {
     public SSEVsDatasetSizeGraph(List<Point> pointsSequential, List<Point> pointsParallel) {
         this.pointsSequential = pointsSequential;
         this.pointsParallel = pointsParallel;
+
+        long maxSSE = 0;
+        for (Point p : pointsSequential) {
+            if (p.y() > maxSSE) {
+                maxSSE = (long) p.y();
+            }
+        }
+        for (Point p : pointsParallel) {
+            if (p.y() > maxSSE) {
+                maxSSE = (long) p.y();
+            }
+        }
+
+        this.MAX_SSE = roundUp(maxSSE);
+        this.STEP_SSE = MAX_SSE / 10;
     }
 
     @Override

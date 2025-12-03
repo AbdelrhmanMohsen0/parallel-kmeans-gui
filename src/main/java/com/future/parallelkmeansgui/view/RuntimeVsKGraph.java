@@ -15,8 +15,8 @@ public class RuntimeVsKGraph extends GraphView {
     private static final int STEP_K = 1;
 
     private static final double MIN_RUNTIME = 0;
-    private static final double MAX_RUNTIME = 1_000;
-    private static final double STEP_RUNTIME = 100;
+    private final double MAX_RUNTIME;
+    private final double STEP_RUNTIME;
 
     private final List<Point> runtimeVsKPointsSequential;
     private final List<Point> runtimeVsKPointsParallel;
@@ -24,6 +24,21 @@ public class RuntimeVsKGraph extends GraphView {
     public RuntimeVsKGraph(List<Point> runtimeVsKPointsSequential, List<Point> runtimeVsKPointsParallel) {
         this.runtimeVsKPointsSequential = runtimeVsKPointsSequential;
         this.runtimeVsKPointsParallel = runtimeVsKPointsParallel;
+
+        long maxRuntime = 0;
+        for (Point p : runtimeVsKPointsSequential) {
+            if (p.y() > maxRuntime) {
+                maxRuntime = (long) p.y();
+            }
+        }
+        for (Point p : runtimeVsKPointsParallel) {
+            if (p.y() > maxRuntime) {
+                maxRuntime = (long) p.y();
+            }
+        }
+
+        this.MAX_RUNTIME = roundUp(maxRuntime);
+        this.STEP_RUNTIME = MAX_RUNTIME / 10;
     }
 
     @Override

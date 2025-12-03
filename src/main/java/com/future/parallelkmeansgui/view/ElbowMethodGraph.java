@@ -16,8 +16,8 @@ public class ElbowMethodGraph extends GraphView {
     private static final int STEP_K = 1;
 
     private static final double MIN_SSE = 0.0;
-    private static final double MAX_SSE = 200.0;
-    private static final double STEP_SSE = 20.0;
+    private final double MAX_SSE;
+    private final double STEP_SSE;
 
     private final List<Point> SSEvsKPointsSequential;
     private final List<Point> SSEvsKPointsParallel;
@@ -29,6 +29,21 @@ public class ElbowMethodGraph extends GraphView {
         this.SSEvsKPointsParallel = SSEvsKPointsParallel;
         this.optimalSequentialKPoint = optimalKPoint;
         this.optimalParallelKPoint = optimalParallelKPoint;
+
+        long maxSSE = 0;
+        for (Point p : SSEvsKPointsSequential) {
+            if (p.y() > maxSSE) {
+                maxSSE = (long) p.y();
+            }
+        }
+        for (Point p : SSEvsKPointsParallel) {
+            if (p.y() > maxSSE) {
+                maxSSE = (long) p.y();
+            }
+        }
+
+        this.MAX_SSE = roundUp(maxSSE);
+        this.STEP_SSE = MAX_SSE / 10;
     }
 
     @Override
