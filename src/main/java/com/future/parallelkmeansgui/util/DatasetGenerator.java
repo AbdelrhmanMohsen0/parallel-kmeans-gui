@@ -8,9 +8,9 @@ import java.util.Random;
 
 public class DatasetGenerator {
 
-    private final Random rand = new Random();
+    private static final Random rand = new Random();
 
-    public List<Point> generate2D(long numPoints) {
+    public static List<Point> generate2D(long numPoints) {
         List<Point> points = new ArrayList<>();
         for (long i = 0; i < numPoints; i++) {
             points.add(new Point(rand.nextDouble(), rand.nextDouble()));

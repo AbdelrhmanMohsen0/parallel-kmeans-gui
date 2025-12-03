@@ -11,9 +11,9 @@ public class KMeansSequentialImpl extends KMeans {
 
     private final List<Point> points;
 
-    public KMeansSequentialImpl(KMeansConfig config, List<Point> points) {
+    public KMeansSequentialImpl(KMeansConfig config) {
         super(config);
-        this.points = points;
+        this.points = config.points();
     }
 
     /**

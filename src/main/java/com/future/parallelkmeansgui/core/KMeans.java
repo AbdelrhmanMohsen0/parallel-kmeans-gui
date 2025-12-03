@@ -2,6 +2,7 @@ package com.future.parallelkmeansgui.core;
 
 import com.future.parallelkmeansgui.model.Cluster;
 import com.future.parallelkmeansgui.model.KMeansConfig;
+import com.future.parallelkmeansgui.model.Result;
 import com.future.parallelkmeansgui.util.RuntimeTimer;
 
 import java.util.List;
@@ -9,8 +10,6 @@ import java.util.List;
 public abstract class KMeans {
 
     protected final KMeansConfig config;
-    protected long runtime;
-    protected double sse;
 
     public KMeans(KMeansConfig config) {
         this.config = config;
@@ -18,20 +17,13 @@ public abstract class KMeans {
 
     protected abstract List<Cluster> fit();
 
-    public List<Cluster> getClusters() {
+    public Result runKMeans() {
         RuntimeTimer timer = new RuntimeTimer();
         timer.start();
         List<Cluster> clusters = fit();
-        this.runtime = timer.stop();
-        this.sse = SSEComputer.compute(clusters);
-        return clusters;
+        long runtime = timer.stop();
+        double sse = SSEComputer.compute(clusters);
+        return new Result(clusters, runtime, sse);
     }
 
-    public long getRuntime() {
-        return runtime;
-    }
-
-    public double getSSE() {
-        return sse;
-    }
 }

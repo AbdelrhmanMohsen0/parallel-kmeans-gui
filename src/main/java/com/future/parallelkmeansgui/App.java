@@ -13,7 +13,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/view/main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 580, 500);
+        Scene scene = new Scene(fxmlLoader.load(), 580, 480);
         stage.setTitle("Parallel K-Means Clustering Visualizer");
         stage.setScene(scene);
         stage.show();

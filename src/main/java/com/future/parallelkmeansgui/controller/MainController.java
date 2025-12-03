@@ -1,7 +1,7 @@
 package com.future.parallelkmeansgui.controller;
 
 import atlantafx.base.controls.RingProgressIndicator;
-import com.future.parallelkmeansgui.view.ViewManager;
+import com.future.parallelkmeansgui.view.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,18 +46,15 @@ public class MainController implements Initializable {
                 "Synthetic 2D Dataset"
         );
 
-        datasetCompoBox.setOnAction(event -> {
-            toggleLayout();
-        });
-
+        datasetCompoBox.setOnAction(event -> toggleLayout());
         datasetCompoBox.setItems(options);
         datasetCompoBox.getSelectionModel().selectFirst();
     }
 
     private void initLoadingRing() {
         RingProgressIndicator ring = new RingProgressIndicator();
-        ring.setPrefSize(100, 100);
-        ring.setMinSize(100, 100);
+        ring.setPrefSize(50, 50);
+        ring.setMinSize(50, 50);
         ring.progressProperty().bind(Bindings.createDoubleBinding(
                 () -> loadingPane.isVisible() ? -1d : 0d,
                 loadingPane.visibleProperty()
@@ -81,7 +78,7 @@ public class MainController implements Initializable {
 
         int minValue = 10;
         int maxValue = Integer.MAX_VALUE;
-        int initialValue = 100000;
+        int initialValue = 1000;
         int stepSize = 1000;
 
         SpinnerValueFactory<Integer> valueFactory =
@@ -154,6 +151,8 @@ public class MainController implements Initializable {
     }
 
     private void onCluster() {
+        runExperimentsButton.setDisable(true);
+        clusterDatasetButton.setDisable(true);
         switch (datasetCompoBox.getValue()) {
             case "Synthetic 2D Dataset" -> clusterSyntheticDataset();
             case "Load 2D Dataset" -> clusterCSVDataset();
@@ -161,16 +160,48 @@ public class MainController implements Initializable {
     }
 
     private void clusterSyntheticDataset() {
+        numOfDataPointsSpinner.increment(0);
         int numberOfPoints = numOfDataPointsSpinner.getValue();
-        ViewManager.getInstance().showClusterReportWindow();
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+
+        reportGraphsGenerator.generateExperimentGraphs(numberOfPoints, generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Selected Dataset Report",
+                    "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 
     private void clusterCSVDataset() {
         String datasetPath = datasetFileTextField.getText();
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
 
+        reportGraphsGenerator.generateExperimentGraphs(datasetPath, generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Selected Dataset Report",
+                    "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 
     private void onRunExperiments() {
-
+        runExperimentsButton.setDisable(true);
+        clusterDatasetButton.setDisable(true);
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+        reportGraphsGenerator.generateMultiExperimentGraphs(generatedGraphs -> {
+            ViewManager.getInstance().showClusterReportWindow(
+                    "Experiments on Multiple Synthetic Datasets Report",
+                    "Some metrics after applying K-Means Clustering algorithm on multiple synthetic datasets.",
+                    generatedGraphs
+            );
+            runExperimentsButton.setDisable(false);
+            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+        });
     }
 }

@@ -1,37 +1,65 @@
 package com.future.parallelkmeansgui.core;
 
-import com.future.parallelkmeansgui.model.Experiment;
+import com.future.parallelkmeansgui.model.Cluster;
+import com.future.parallelkmeansgui.model.KMeansConfig;
+import com.future.parallelkmeansgui.model.Point;
+import com.future.parallelkmeansgui.model.Result;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public class KMeansExperiment implements Runnable {
+public class KMeansExperiment {
 
-    // The key is K and the value is the experiment corresponding to this K
-    private final Map<Integer, Experiment> sequentialExperimentsByK = new HashMap<>();
-    private final Map<Integer, Experiment> parallelExperimentsByK = new HashMap<>();
+    private final List<Point> dataset;
+    private List<Cluster> bestSequentialClusters;
+    private List<Cluster> bestParallelClusters;
+    private List<Point> sseVsKSequential;
+    private List<Point> sseVsKParallel;
+    private Point bestSSEVsKPointSequential;
+    private Point bestSSEVsKPointParallel;
+    private List<Point> runtimeVsKSequential;
+    private List<Point> runtimeVsKParallel;
 
-    // The experiment with the lowest SSE according to the elbow Method
-    private Experiment bestSequentialExperiment;
-    private Experiment bestParallelExperiment;
-
-    // The key is the dataset size and the value is the experiment corresponding to it with the K fixed to the best K
-    private final Map<Long, Experiment> sequentialExperimentsByDatasetSize = new HashMap<>();
-    private final Map<Long, Experiment> parallelExperimentsByDatasetSize = new HashMap<>();
-
-
-
-    // Implement KMeansExperiment to run sequential and parallel K-means for several values of K and dataset sizes.
-    @Override
-    public void run() {
-
+    public KMeansExperiment(List<Point> dataset) {
+        this.dataset = dataset;
     }
 
-    public Map<Integer, Experiment> getSequentialExperiments() {
-        return sequentialExperimentsByK;
+    public void runExperiments() {
+        // Just and example, this method should populate all properties in this class
+        KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, 3, 1000, 0.1));
+        Result result = kmeans.runKMeans();
+        bestSequentialClusters = result.clusters();
     }
 
-    public Map<Integer, Experiment> getParallelExperiments() {
-        return parallelExperimentsByK;
+    public List<Cluster> getBestSequentialClusters() {
+        return bestSequentialClusters;
     }
+
+    public List<Cluster> getBestParallelClusters() {
+        return bestParallelClusters;
+    }
+
+    public List<Point> getSseVsKSequential() {
+        return sseVsKSequential;
+    }
+
+    public List<Point> getSseVsKParallel() {
+        return sseVsKParallel;
+    }
+
+    public List<Point> getRuntimeVsKSequential() {
+        return runtimeVsKSequential;
+    }
+
+    public List<Point> getRuntimeVsKParallel() {
+        return runtimeVsKParallel;
+    }
+
+    public Point getBestSSEVsKPointSequential() {
+        return bestSSEVsKPointSequential;
+    }
+
+    public Point getBestSSEVsKPointParallel() {
+        return bestSSEVsKPointParallel;
+    }
+
 }
