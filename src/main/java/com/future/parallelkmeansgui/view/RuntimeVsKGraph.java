@@ -14,9 +14,9 @@ public class RuntimeVsKGraph extends GraphView {
     private static final int MAX_K = 20;
     private static final int STEP_K = 1;
 
-    private static final double MIN_RUNTIME = 0.0;
-    private static final double MAX_RUNTIME = 600.0;
-    private static final double STEP_RUNTIME = 50.0;
+    private static final double MIN_RUNTIME = 0;
+    private static final double MAX_RUNTIME = 1_000;
+    private static final double STEP_RUNTIME = 100;
 
     private final List<Point> runtimeVsKPointsSequential;
     private final List<Point> runtimeVsKPointsParallel;
@@ -32,7 +32,7 @@ public class RuntimeVsKGraph extends GraphView {
         x.setLabel("K");
 
         var y = new NumberAxis(MIN_RUNTIME, MAX_RUNTIME, STEP_RUNTIME);
-        y.setLabel("Runtime (ms)");
+        y.setLabel("Runtime (μs)");
 
         var series1 = creatSeries("Sequential Algorithm", runtimeVsKPointsSequential);
         var series2 = creatSeries("Parallel Algorithm", runtimeVsKPointsParallel);

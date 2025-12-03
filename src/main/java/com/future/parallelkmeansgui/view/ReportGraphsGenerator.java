@@ -83,11 +83,11 @@ public class ReportGraphsGenerator {
         );
         GraphView scatterPlotSequential = new ScatterPlot(
                 kmeansExperiment.getBestSequentialClusters(),
-                "Scatter Plot For " + kmeansExperiment.getBestSequentialClusters().size() + " Clusters"
+                "Scatter Plot For " + kmeansExperiment.getBestSequentialClusters().size() + " Clusters (Sequential)"
         );
         GraphView scatterPlotParallel = new ScatterPlot(
                 kmeansExperiment.getBestParallelClusters(),
-                "Scatter Plot For " + kmeansExperiment.getBestParallelClusters().size() + " Clusters"
+                "Scatter Plot For " + kmeansExperiment.getBestParallelClusters().size() + " Clusters (Parallel)"
         );
         GraphView runtimeVsK = new RuntimeVsKGraph(
                 kmeansExperiment.getRuntimeVsKSequential(),

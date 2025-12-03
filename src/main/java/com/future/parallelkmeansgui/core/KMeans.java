@@ -24,7 +24,7 @@ public abstract class KMeans {
 
         List<Cluster> clusters = fit();
 
-        long runtime = timer.stop();
+        long runtime = timer.stop() / 1_000;
         double sse = SSEComputer.compute(clusters);
 
         return new Result(clusters, runtime, sse);
