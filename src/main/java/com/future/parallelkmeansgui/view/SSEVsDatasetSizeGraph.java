@@ -15,8 +15,8 @@ public class SSEVsDatasetSizeGraph extends GraphView {
     private static final int STEP_DatasetSize = 100_000;
 
     private static final double MIN_SSE = 0.0;
-    private static final double MAX_SSE = 1_000_000;
-    private static final double STEP_SSE = 100_000;
+    private static final double MAX_SSE = 120_000;
+    private static final double STEP_SSE = 10_000;
 
     private final List<Point> pointsSequential;
     private final List<Point> pointsParallel;
