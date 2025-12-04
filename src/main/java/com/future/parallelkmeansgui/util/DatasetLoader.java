@@ -27,9 +27,8 @@ public class DatasetLoader {
                         double x = Double.parseDouble(parts[0].trim());
                         double y = Double.parseDouble(parts[1].trim());
                         rawPoints.add(new Point(x, y));
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException ignored) {
 
-                        System.out.println("Skipping invalid line (likely header): " + line);
                     }
                 }
             }

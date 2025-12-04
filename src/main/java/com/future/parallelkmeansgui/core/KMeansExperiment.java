@@ -20,9 +20,9 @@ public class KMeansExperiment {
     private List<Point> runtimeVsKSequential;
     private List<Point> runtimeVsKParallel;
 
-    public static final int MAX_ITERATION = 1000;
+    public static final int MAX_ITERATION = 2000;
     public static final int K = 20;
-    public static final double TOLERANCE = 0.1;
+    public static final double TOLERANCE = 0.001;
 
     public KMeansExperiment(List<Point> dataset) {
         this.dataset = dataset;

@@ -170,8 +170,7 @@ public class MainController implements Initializable {
                     "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
                     generatedGraphs
             );
-            runExperimentsButton.setDisable(false);
-            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+            resetButtons();
         });
     }
 
@@ -185,8 +184,7 @@ public class MainController implements Initializable {
                     "Some metrics after applying K-Means Clustering algorithm on the specified dataset.",
                     generatedGraphs
             );
-            runExperimentsButton.setDisable(false);
-            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+            resetButtons();
         });
     }
 
@@ -200,8 +198,12 @@ public class MainController implements Initializable {
                     "Some metrics after applying K-Means Clustering on multiple synthetic datasets.",
                     generatedGraphs
             );
-            runExperimentsButton.setDisable(false);
-            clusterDatasetButton.setDisable(datasetCompoBox.getValue().equals("Load 2D Dataset"));
+            resetButtons();
         });
+    }
+
+    private void resetButtons() {
+        runExperimentsButton.setDisable(false);
+        clusterDatasetButton.setDisable(datasetFileTextField.getText().isEmpty() && !datasetCompoBox.getValue().equals("Synthetic 2D Dataset"));
     }
 }
