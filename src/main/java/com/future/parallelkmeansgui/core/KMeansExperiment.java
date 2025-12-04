@@ -11,6 +11,7 @@ import java.util.List;
 public class KMeansExperiment {
 
     private final List<Point> dataset;
+    private final boolean runWithRestarts;
     private List<Cluster> bestSequentialClusters;
     private List<Cluster> bestParallelClusters;
     private List<Point> sseVsKSequential;
@@ -23,9 +24,11 @@ public class KMeansExperiment {
     public static final int MAX_ITERATION = 2000;
     public static final int K = 20;
     public static final double TOLERANCE = 0.001;
+    private static final int RESTART_TRIALS = 50;
 
-    public KMeansExperiment(List<Point> dataset) {
+    public KMeansExperiment(List<Point> dataset, boolean runWithRestarts) {
         this.dataset = dataset;
+        this.runWithRestarts = runWithRestarts;
     }
 
     public void runExperiments() {
@@ -60,7 +63,12 @@ public class KMeansExperiment {
         List<Result> results = new ArrayList<>();
         for (int i = 1; i <= K; i++){
             KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
-            Result result = kmeans.runKMeans();
+            Result result;
+            if (runWithRestarts){
+                result = kmeans.runKMeansWithRestarts(RESTART_TRIALS);
+            } else {
+                result = kmeans.runKMeans();
+            }
             results.add(result);
         }
         return results;
@@ -70,7 +78,12 @@ public class KMeansExperiment {
         List<Result> results = new ArrayList<>();
         for (int i = 1; i <= K; i++){
             KMeans kmeans = new KMeansParallelImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
-            Result result = kmeans.runKMeans();
+            Result result;
+            if (runWithRestarts){
+                result = kmeans.runKMeansWithRestarts(RESTART_TRIALS);
+            } else {
+                result = kmeans.runKMeans();
+            }
             results.add(result);
         }
         return results;

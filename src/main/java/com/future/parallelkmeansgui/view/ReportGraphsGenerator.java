@@ -15,13 +15,15 @@ import java.util.function.Consumer;
 public class ReportGraphsGenerator {
 
     public StackPane loadingPane;
+    public final boolean runWithRestarts;
 
-    public ReportGraphsGenerator(StackPane loadingPane) {
+    public ReportGraphsGenerator(StackPane loadingPane, boolean runWithRestarts) {
         this.loadingPane = loadingPane;
+        this.runWithRestarts = runWithRestarts;
     }
 
     public void generateExperimentGraphs(List<Point> dataset, Consumer<List<Node>> onFinished) {
-        KMeansExperiment kmeansExperiment = new KMeansExperiment(dataset);
+        KMeansExperiment kmeansExperiment = new KMeansExperiment(dataset, runWithRestarts);
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {

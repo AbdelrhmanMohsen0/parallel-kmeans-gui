@@ -28,16 +28,19 @@ public class MainController implements Initializable {
     public Spinner<Integer> numOfDataPointsSpinner;
     public HBox syntheticPane;
     public AnchorPane browsePane;
+    public Button clusterDatasetWithRestartsButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         browseButton.setOnAction(event -> onBrowse());
-        clusterDatasetButton.setOnAction(event -> onCluster());
+        clusterDatasetButton.setOnAction(event -> onCluster(false));
+        clusterDatasetWithRestartsButton.setOnAction(event -> onCluster(true));
         runExperimentsButton.setOnAction(event -> onRunExperiments());
         initDatasetCompoBox();
         initLoadingRing();
         initDatasetFileTextField();
         initDatasetPointsSpinner();
+        clusterDatasetWithRestartsButton.disableProperty().bindBidirectional(clusterDatasetButton.disableProperty());
     }
 
     private void initDatasetCompoBox() {
@@ -150,19 +153,19 @@ public class MainController implements Initializable {
         }
     }
 
-    private void onCluster() {
+    private void onCluster(boolean runWithRestarts) {
         runExperimentsButton.setDisable(true);
         clusterDatasetButton.setDisable(true);
         switch (datasetCompoBox.getValue()) {
-            case "Synthetic 2D Dataset" -> clusterSyntheticDataset();
-            case "Load 2D Dataset" -> clusterCSVDataset();
+            case "Synthetic 2D Dataset" -> clusterSyntheticDataset(runWithRestarts);
+            case "Load 2D Dataset" -> clusterCSVDataset(runWithRestarts);
         }
     }
 
-    private void clusterSyntheticDataset() {
+    private void clusterSyntheticDataset(boolean runWithRestarts) {
         numOfDataPointsSpinner.increment(0);
         int numberOfPoints = numOfDataPointsSpinner.getValue();
-        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane, runWithRestarts);
 
         reportGraphsGenerator.generateExperimentGraphs(numberOfPoints, generatedGraphs -> {
             ViewManager.getInstance().showClusterReportWindow(
@@ -174,9 +177,9 @@ public class MainController implements Initializable {
         });
     }
 
-    private void clusterCSVDataset() {
+    private void clusterCSVDataset(boolean runWithRestarts) {
         String datasetPath = datasetFileTextField.getText();
-        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane, runWithRestarts);
 
         reportGraphsGenerator.generateExperimentGraphs(datasetPath, generatedGraphs -> {
             ViewManager.getInstance().showClusterReportWindow(
@@ -191,7 +194,7 @@ public class MainController implements Initializable {
     private void onRunExperiments() {
         runExperimentsButton.setDisable(true);
         clusterDatasetButton.setDisable(true);
-        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane);
+        ReportGraphsGenerator reportGraphsGenerator = new ReportGraphsGenerator(loadingPane, false);
         reportGraphsGenerator.generateMultiExperimentGraphs(generatedGraphs -> {
             ViewManager.getInstance().showClusterReportWindow(
                     "Experiments on Multiple Synthetic Datasets Report",

@@ -39,20 +39,28 @@
             <VBox.margin>
                 <Insets />
             </VBox.margin>
-         <VBox maxWidth="-Infinity" spacing="11.0">
-            <children>
-                   <Button fx:id="clusterDatasetButton" disable="true" focusTraversable="false" mnemonicParsing="false" prefHeight="36.0" prefWidth="336.0" styleClass="accent" text="Run Experiments on Selected Dataset">
-                       <cursor>
-                           <Cursor fx:constant="HAND" />
-                       </cursor>
-                   </Button>
-                   <Button fx:id="runExperimentsButton" focusTraversable="false" mnemonicParsing="false" prefHeight="36.0" prefWidth="336.0" text="Run Experiments on Multiple Synthetic Datasets">
-                       <cursor>
-                           <Cursor fx:constant="HAND" />
-                       </cursor>
-                   </Button>
-            </children>
-         </VBox>
+            <VBox maxWidth="-Infinity" spacing="11.0">
+                <Button fx:id="clusterDatasetButton" disable="true" focusTraversable="false" mnemonicParsing="false"
+                        prefHeight="36.0" prefWidth="342.0" styleClass="accent"
+                        text="Run Experiments on Selected Dataset">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+                <Button fx:id="clusterDatasetWithRestartsButton" disable="true" focusTraversable="false"
+                        mnemonicParsing="false" prefHeight="36.0" prefWidth="342.0" styleClass="accent"
+                        text="Run Experiments on Selected Dataset With Restarts">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+                <Button fx:id="runExperimentsButton" focusTraversable="false" mnemonicParsing="false" prefHeight="36.0"
+                        prefWidth="342.0" text="Run Experiments on Multiple Synthetic Datasets">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+            </VBox>
         </StackPane>
     </VBox>
     <Label layoutX="43.0" layoutY="45.0" style="-fx-font-family: &quot;Segoe UI Semibold&quot;;" styleClass="title-1" text="Parallel K-Means Clustering Visualizer" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="30.0" />
