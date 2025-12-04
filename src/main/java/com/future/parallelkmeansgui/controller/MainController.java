@@ -197,7 +197,7 @@ public class MainController implements Initializable {
         reportGraphsGenerator.generateMultiExperimentGraphs(generatedGraphs -> {
             ViewManager.getInstance().showClusterReportWindow(
                     "Experiments on Multiple Synthetic Datasets Report",
-                    "Some metrics after applying K-Means Clustering algorithm on multiple synthetic datasets.",
+                    "Some metrics after applying K-Means Clustering on multiple synthetic datasets.",
                     generatedGraphs
             );
             runExperimentsButton.setDisable(false);

@@ -28,6 +28,24 @@ public class PointAssigner {
         if (nearestCluster != null) {
             nearestCluster.points().add(point); // assumes points() returns a mutable list
         }
+    }
 
+    public static int getNearestCentroidIndex(Point point, List<Point> centroids) {
+        if (centroids == null || centroids.isEmpty() || point == null) {
+            throw new IllegalArgumentException("Point and clusters must not be null or empty.");
+        }
+
+        int nearestCentroidIndex = 0;
+        double minDistance = Double.MAX_VALUE;
+
+        for (int i = 0; i < centroids.size(); i++) {
+            double distance = DistanceCalculator.calculate(point, centroids.get(i));
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestCentroidIndex = i;
+            }
+        }
+
+        return nearestCentroidIndex;
     }
 }

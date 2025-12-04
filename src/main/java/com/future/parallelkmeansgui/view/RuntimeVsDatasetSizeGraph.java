@@ -11,7 +11,7 @@ import java.util.List;
 public class RuntimeVsDatasetSizeGraph extends GraphView {
 
     private static final int MIN_DATASET_SIZE = 0;
-    private static final int MAX_DATASET_SIZE = 1_000_000;
+    private static final int MAX_DATASET_SIZE = 2_000_000;
     private static final int STEP_DATASET_SIZE = 100_000;
 
     private static final double MIN_RUNTIME = 0;

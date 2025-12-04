@@ -11,8 +11,8 @@ import java.util.List;
 public class SSEVsDatasetSizeGraph extends GraphView {
 
     private static final int MIN_DatasetSize = 0;
-    private static final int MAX_DatasetSize = 1_000_000;
-    private static final int STEP_DatasetSize = 100_000;
+    private static final int MAX_DatasetSize = 2_000_000;
+    private static final int STEP_DatasetSize = 200_000;
 
     private static final double MIN_SSE = 0.0;
     private final double MAX_SSE;

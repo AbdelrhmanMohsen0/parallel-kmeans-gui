@@ -5,7 +5,6 @@ import com.future.parallelkmeansgui.model.KMeansConfig;
 import com.future.parallelkmeansgui.model.Point;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
@@ -30,48 +29,43 @@ public class KMeansParallelImpl extends KMeans {
 
         List<Cluster> clusters = new ArrayList<>(k);
         for (Point c : centroids) {
-            List<Point> pts = Collections.synchronizedList(new ArrayList<>());
-            clusters.add(new Cluster(c, pts));
+            clusters.add(new Cluster(c, new ArrayList<>()));
         }
 
         ForkJoinPool pool = ForkJoinPool.commonPool();
-        List<Cluster> oldClusters = null;
 
         for (int iter = 0; iter < maxIterations; iter++) {
+
+            KMeansAssignTask rootTask = new KMeansAssignTask(points, 0, points.size(), centroids);
+            List<List<Point>> centroidsPointsMap = pool.invoke(rootTask);
+            assignToClusters(centroidsPointsMap, clusters);
+
+            List<Cluster> newClusters = new ArrayList<>();
+            List<Point> newCentroids = new ArrayList<>();
             for (Cluster cluster : clusters) {
-                cluster.points().clear();
+                Cluster newCluster = CentroidReComputer.reCompute(cluster);
+                newClusters.add(newCluster);
+                newCentroids.add(newCluster.centroid());
             }
 
-            KMeansAssignAction rootTask = new KMeansAssignAction(points, 0, points.size(), clusters);
-            pool.invoke(rootTask);
-
-            List<Cluster> newClusters = new ArrayList<>(clusters.size());
-            for (Cluster cluster : clusters) {
-                Cluster updated = CentroidReComputer.reCompute(cluster);
-                List<Point> synchronizedList = Collections.synchronizedList(new ArrayList<>());
-                newClusters.add(new Cluster(updated.centroid(), synchronizedList));
+            if (CentroidReComputer.hasClustersConverged(clusters, newClusters, tolerance)) {
+                return clusters;
             }
 
-            if (oldClusters != null && CentroidReComputer.hasClustersConverged(oldClusters, newClusters, tolerance)) {
-                List<Cluster> finalClusters = new ArrayList<>(clusters.size());
-                for (int i = 0; i < clusters.size(); i++) {
-                    Cluster current = clusters.get(i);
-                    Point newCentroid = newClusters.get(i).centroid();
-                    finalClusters.add(new Cluster(newCentroid, current.points()));
-                }
-                return finalClusters;
-            }
-
-            oldClusters = clusters;
             clusters = newClusters;
+            centroids = newCentroids;
         }
 
-        for (Cluster cluster : clusters) {
-            cluster.points().clear();
-        }
-        KMeansAssignAction finalAssign = new KMeansAssignAction(points, 0, points.size(), clusters);
-        pool.invoke(finalAssign);
+        KMeansAssignTask rootTask = new KMeansAssignTask(points, 0, points.size(), centroids);
+        List<List<Point>> centroidsPointsMap = pool.invoke(rootTask);
+        assignToClusters(centroidsPointsMap, clusters);
 
         return clusters;
+    }
+
+    private static void assignToClusters(List<List<Point>> centroidsPointsList, List<Cluster> clusters) {
+        for (int i = 0; i < clusters.size(); i++) {
+            clusters.get(i).points().addAll(centroidsPointsList.get(i));
+        }
     }
 }

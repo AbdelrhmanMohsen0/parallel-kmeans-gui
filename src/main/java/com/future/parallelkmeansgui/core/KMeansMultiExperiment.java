@@ -13,7 +13,7 @@ import static com.future.parallelkmeansgui.core.KMeansExperiment.TOLERANCE;
 
 public class KMeansMultiExperiment {
 
-    public static int MAX_DATASET_SIZE = 1_001_000;
+    public static int MAX_DATASET_SIZE = 2_001_000;
     public static int DATASET_SIZE_STEP = 100_000;
     public static int INITIAL_DATASET_SIZE = 1000;
     public static int K = 3;
