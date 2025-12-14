@@ -1,58 +1,57 @@
 package com.future.parallelkmeansgui.core;
 
+import com.future.parallelkmeansgui.model.Cluster;
 import com.future.parallelkmeansgui.model.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RecursiveTask;
 
-public class KMeansAssignTask extends RecursiveTask<List<List<Point>>> {
+public class KMeansAssignTask extends RecursiveTask<List<Cluster>> {
 
     private static final int THRESHOLD = 50_000;
 
     private final List<Point> points;
     private final int start;
     private final int end;
-    private final List<Point> centroids;
+    private final List<Cluster> clusters;
 
-    public KMeansAssignTask(List<Point> points, int start, int end, List<Point> centroids) {
+    public KMeansAssignTask(List<Point> points, int start, int end, List<Cluster> clusters) {
         this.points = points;
         this.start = start;
         this.end = end;
-        this.centroids = centroids;
+        this.clusters = clusters;
     }
 
     @Override
-    protected List<List<Point>> compute() {
-        List<List<Point>> result = new ArrayList<>(centroids.size());
-        for (int i = 0; i < centroids.size(); i++) {
-            result.add(new ArrayList<>());
-        }
+    protected List<Cluster> compute() {
         int len = end - start;
-        if (len <= 0) return result;
 
         if (len <= THRESHOLD) {
+            List<Cluster> result = new ArrayList<>(clusters.size());
+            for (Cluster cluster : clusters) {
+                result.add(new Cluster(cluster.centroid(), new ArrayList<>()));
+            }
             for (int i = start; i < end; i++) {
                 Point p = points.get(i);
-                int centroidIndex = PointAssigner.getNearestCentroidIndex(p, centroids);
-                result.get(centroidIndex).add(p);
+                PointAssigner.assignToNearestCluster(p, result);
             }
             return result;
         } else {
             int mid = start + len / 2;
-            KMeansAssignTask left = new KMeansAssignTask(points, start, mid, centroids);
-            KMeansAssignTask right = new KMeansAssignTask(points, mid, end, centroids);
-            left.fork();
-            List<List<Point>> rightResult = right.compute();
+            KMeansAssignTask left = new KMeansAssignTask(points, start, mid, clusters);
+            KMeansAssignTask right = new KMeansAssignTask(points, mid, end, clusters);
 
-            List<List<Point>> leftResult = left.join();
-            return merge(leftResult, rightResult);
+            left.fork();
+            right.fork();
+
+            return merge(left.join(), right.join());
         }
     }
 
-    private static List<List<Point>> merge(List<List<Point>> left, List<List<Point>> right) {
+    private static List<Cluster> merge(List<Cluster> left, List<Cluster> right) {
         for (int i = 0; i < left.size(); i++) {
-            left.get(i).addAll(right.get(i));
+            left.get(i).points().addAll(right.get(i).points());
         }
         return left;
     }

@@ -22,7 +22,7 @@ public class KMeansExperiment {
     private List<Point> runtimeVsKParallel;
 
     public static final int MAX_ITERATION = 2000;
-    public static final int K = 20;
+    public static final int MAX_K = 20;
     public static final double TOLERANCE = 0.001;
     private static final int RESTART_TRIALS = 50;
 
@@ -39,18 +39,18 @@ public class KMeansExperiment {
         List<Result> kmeansSequentialResults = getKmeansSequentialResults();
         List<Result> kmeansParallelResults = getKmeansParallelResults();
 
-        for (int i = 1, j = 0; i <= K; i++, j++) {
+        for (int i = 1, j = 0; i <= MAX_K; i++, j++) {
             sseVsKSequential.add(new Point(i,kmeansParallelResults.get(j).sse()));
             runtimeVsKSequential.add(new Point(i,kmeansParallelResults.get(j).runtime()));
             sseVsKParallel.add(new Point(i,kmeansSequentialResults.get(j).sse()));
             runtimeVsKParallel.add(new Point(i,kmeansSequentialResults.get(j).runtime()));
         }
 
-        Result bestKmeansParallelResult = ElbowKGetter.getBestResult(getKmeansParallelResults());
-        Result bestKmeansSequentialResult = ElbowKGetter.getBestResult(getKmeansSequentialResults());
+        Result bestKmeansSequentialResult = ElbowKGetter.getBestResult(kmeansSequentialResults);
+        Result bestKmeansParallelResult = ElbowKGetter.getBestResult(kmeansParallelResults);
 
-        this.bestParallelClusters = bestKmeansParallelResult.clusters();
         this.bestSequentialClusters = bestKmeansSequentialResult.clusters();
+        this.bestParallelClusters = bestKmeansParallelResult.clusters();
         this.sseVsKSequential = sseVsKSequential;
         this.sseVsKParallel = sseVsKParallel;
         this.bestSSEVsKPointParallel = new Point(bestKmeansParallelResult.clusters().size(), bestKmeansParallelResult.sse());
@@ -61,7 +61,7 @@ public class KMeansExperiment {
 
     private List<Result> getKmeansSequentialResults(){
         List<Result> results = new ArrayList<>();
-        for (int i = 1; i <= K; i++){
+        for (int i = 1; i <= MAX_K; i++){
             KMeans kmeans = new KMeansSequentialImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
             Result result;
             if (runWithRestarts){
@@ -76,7 +76,7 @@ public class KMeansExperiment {
 
     private List<Result> getKmeansParallelResults(){
         List<Result> results = new ArrayList<>();
-        for (int i = 1; i <= K; i++){
+        for (int i = 1; i <= MAX_K; i++){
             KMeans kmeans = new KMeansParallelImpl(new KMeansConfig(dataset, i, MAX_ITERATION, TOLERANCE));
             Result result;
             if (runWithRestarts){
